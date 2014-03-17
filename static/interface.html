@@ -1,0 +1,296 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Hacknowledge</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900" rel="stylesheet" />
+<link href="default.css" rel="stylesheet" type="text/css" media="all" />
+<link href="fonts.css" rel="stylesheet" type="text/css" media="all" />
+
+<script src="bcsocket.js"></script>             <!-- add transport -->
+<script src="webclient/share.js"></script>      <!-- ShareJS -->
+<script src="webclient/textarea.js"></script>   <!-- helper to attach textarea to ShareJS server -->
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src='http://localhost:4444/socket.io/socket.io.js'></script>
+<script src='http://localhost:8089/socket.io/socket.io.js'></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+
+</head>
+<body>
+
+<div id="header-wrapper">
+	<div id="header-featured">
+		<div id="banner-wrapper">
+			<div id="banner" class="container">
+				<!-- It's never too late - in fiction or in life - to revise. -->
+				<h2 id="welcome">Maecenas luctus lectus</h2>
+				<p id="welcomeQuote">Hi, we hope that you are not late to the class. But if you are, don't worry. RELAX!!.... 
+					We will automaticaaly sync you with the rest of the class. </p>
+			<!-- 	<a href="#" class="button">Etiam posuere</a>  -->
+			</div>
+		</div>
+	</div>
+</div>
+<div id="wrapper">
+	<div id="page" class="container">
+		<div id="content">
+
+			<div style="text-align:center"> 
+				<div class="title">
+				<h3 id="videotuned">Stay tuned to the video as teacher plays it</h3>
+				 </div>    
+			    <video id="video1" width="420">
+			      <source src="movie4.mp4" type="video/mp4">
+			      <!-- <source src="mov_bbb.ogg" type="video/ogg"> -->
+			      <source src="movie4.webm" type="video/webm">
+			      Your browser does not support HTML5 video.
+			    </video>
+			    <br>
+			    <button id="playpause">Play/Pause</button> 
+			    <br/>
+			    <br/>
+				<div style="text-align:center"> 
+				<div class="title">
+				<h3 id="notes">Make sure that you take the notes as the teacher writes</h3>
+				 </div>
+				</div>	     
+	       </div> 
+
+		</div>
+		<div id="sidebar">
+			
+				<div class="title">
+				<h3>Chat and ask for doubts (Similar to IRC chat)</h3>
+				 </div> 
+				 <div id="chat" style="width: 300px; height: 310px;overflow: auto; border: 1px solid black"> </div>
+				 <form id="formoid" action="#"  method="post">
+				 <input type="text" name="text" style="width:300px" id="text">
+				</form>
+        		<!-- <input type="button" name="send" id="send" value="send">		
+        		 --><br/><br/>
+        		
+		</div>
+		<!-- <div id="complete">
+			<textarea id='sharetext'></textarea>
+		</div> -->
+
+		<div id="complete">
+			<br/><br/>
+			 
+			<textarea id='sharetext'></textarea>
+		</div>
+	</div>
+
+</div>
+
+
+<div id="copyright" class="container">
+	<p>Copyright (c) 2014 Roopgundeep Singh Sodhi All rights reserved.</p>
+</div>
+
+<script>
+       var elem = document.getElementById("sharetext");
+        // connect to the server
+        var connection = sharejs.open('test', 'text', function(error, doc) {
+            // this function is called once the connection is opened
+            if (error) {
+                console.log("ERROR:", error);
+            } else {
+                // attach the ShareJS document to the textarea
+                doc.attach_textarea(elem);
+            }
+        });
+
+      var myVideo=document.getElementById("video1"); 
+ 
+
+      $(document).ready(function () {
+        
+        var url=document.URL;
+        var user_id=url.split("?")[1];
+        var userName="Anonymous";
+        if(url.split("?")[2]){
+        	userName=url.split("?")[2];
+        }
+        var isChannelReady;
+        var isInitiator = false;
+        var isStarted = false;
+        var fullFlag = false;
+        console.log("hello");
+        document.getElementById("welcome").innerHTML="Welcome "+ userName;
+        if(user_id==2){
+          document.getElementById('playpause').style.visibility = 'hidden';
+          document.getElementById("sharetext").readOnly=true;
+          document.getElementById("videotuned").innerHTML="Stay tuned to the video as teacher plays it";
+          document.getElementById("notes").innerHTML="Make sure that you take the notes as the teacher writes";
+
+          document.getElementById("welcomeQuote").innerHTML="Hi, we hope that you are not late to the class. But if you are, don't worry. RELAX!!....We will automaticaly "+"sync you with the rest of the class.";
+        };
+       	if(user_id==1){
+          document.getElementById("videotuned").innerHTML="You can show video for demonstration";
+          document.getElementById("notes").innerHTML="This your classroom Blackboard";
+       		document.getElementById("welcomeQuote").innerHTML="Hi, you can teacherch your class very efficiently and can even chat with them and solve there doubts."+          " We will keep all your activities in sync with all the students";
+       	}
+
+        var room = location.pathname.substring(1);
+        if (room === '') {
+        //  room = prompt('Enter room name:');
+          room = 'foo';
+        } else {
+          //
+        }
+
+        var socket = io.connect('http://localhost:4444');
+
+        $.ajax({
+          type: "POST",
+          url: "../lib/app.js", 
+          dataType: "json",
+          contentType: "application/json; charset=UTF-8",
+          data:  {name: "Manish", address: {city: "BBSR", country: "IN"}}
+          }).done(function ( data ) {
+          console.log("ajax callback response:" + data);
+        });
+
+
+        if (room !== '') {
+          console.log('Create or join room', room);
+          socket.emit('create or join', room);
+        }
+
+        socket.on('created', function (room){
+        //  console.log('Created room ' + room);
+          isInitiator = true;
+        });
+
+        socket.on('full', function (room){
+          //console.log('Room ' + room + ' is full');
+          fullFlag = true;
+        });
+
+        socket.on('join', function (room){
+          isChannelReady = true;
+        });
+
+        socket.on('joined', function (room){
+          //console.log('This peer has joined room ' + room);
+          isChannelReady = true;
+        });
+
+        socket.on('log', function (array){
+          //console.log.apply(console, array);
+        });
+
+        socket.on('message', function (data) {
+          console.log('fullFlag = ' + fullFlag);
+          if(!fullFlag){
+            //$('#chat').val($('#chat').val()+data.text+'<br />');
+            $('#chat').append(data.text + '<br />');
+            $( "#chat" ).scrollTop( 3000 )
+          }
+            
+        });
+
+        socket.on('clientInitial', function (data) {
+              
+              console.log("dataInitial"+data);
+              var first=data.split('#')[0];
+              var videoTime=data.split('#')[1];
+              console.log(videoTime);
+              myVideo.currentTime=videoTime;
+              if(first=="playing"){                
+                myVideo.play();
+              } 
+              else{
+                myVideo.pause(); 
+              } 
+        });
+      
+        socket.emit('videoinitial', user_id);
+
+        socket.on('videoChanges', function (data) {
+              console.log("data"+data);
+              var first=data.split('#')[0];
+              var videoTime=data.split('#')[1];
+              console.log(videoTime);
+              myVideo.currentTime=videoTime;
+              if(first=="playing"){                
+                myVideo.play();
+              } 
+              else{
+                myVideo.pause(); 
+              } 
+        });
+      
+
+      	 $("#formoid").submit(function(event) {
+
+		  /* stop form from submitting normally */
+		  event.preventDefault();
+		  if(!fullFlag)
+          {
+          	var chatData="["+userName+"]: "+$('#text').val();
+            socket.emit('sendMessage', { text: chatData });
+            $('#text').val('');
+           
+          }		 
+		});
+        // $('#send').click(function () {
+        //   if(!fullFlag)
+        //   {
+
+        //     socket.emit('sendMessage', { text: $('#text').val() });
+        //     $('text').val('');
+        //   }
+        // });
+
+        $('#playpause').click(function () {
+            var currenttime=myVideo.currentTime;
+           // currenttime=(currenttime).toFixed(4);
+            if (myVideo.paused) {
+              var dataInfo="playing#"+currenttime;
+              socket.emit('videoControl', dataInfo);
+            }              
+            else{
+              var dataInfo="pause#"+currenttime;
+              socket.emit('videoControl', dataInfo);
+            }                         
+
+        });
+        function checking(){
+          var currenttime=myVideo.currentTime;
+          if (myVideo.paused) {
+              var dataInfo="playing#"+currenttime;
+              socket.emit('setprevious', dataInfo);
+          }
+          else{
+              var dataInfo="pause#"+currenttime;
+              socket.emit('setprevious', dataInfo);
+            }  
+
+        }
+        setInterval(function(){
+          if(user_id!=2){
+            var currenttime=myVideo.currentTime;
+            console.log("hello");
+            if (myVideo.paused) {
+                var dataInfo="pause#"+currenttime;
+                socket.emit('setprevious', dataInfo);
+            }
+            else{
+                var dataInfo="playing#"+currenttime;
+                socket.emit('setprevious', dataInfo);
+              }  
+          }
+          console.log("hello");          
+        },200);
+
+
+      });
+</script>
+
+</body>
+</html>

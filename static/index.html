@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Hack-Knowledge</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900" rel="stylesheet" />
+<link href="default.css" rel="stylesheet" type="text/css" media="all" />
+<link href="fonts.css" rel="stylesheet" type="text/css" media="all" />
+
+<!--[if IE 6]><link href="default_ie6.css" rel="stylesheet" type="text/css" /><![endif]-->
+
+</head>
+<body>
+<script>
+function student(){
+	var userName=document.getElementById("text").value;
+	if(userName!=""){
+		window.location.href = "http://localhost:5000/interface.html?2?"+userName;
+	}
+	else{
+		document.getElementById("error").innerHTML="Username is compulsory!!";
+	}
+}
+function teacher(){
+	var userName=document.getElementById("text").value;
+	if(userName!=""){
+		window.location.href = "http://localhost:5000/interface.html?1?"+userName;
+	}
+	else{
+		document.getElementById("error").innerHTML="Username is compulsory!!";
+	}
+}
+</script>	
+<div id="header-wrapper">
+	<div id="header" class="container">
+		<div id="logo">
+			<h1><a href="#">Hack-Knowledge</a></h1>
+		</div>
+	</div>
+	<div id="header-featured">
+		<div id="banner-wrapper">
+			<div id="banner" class="container">
+				<h2>Welcome to Hack-Knowledge</h2>
+				<p>This is <strong>Hack-Knowledge</strong>, a webapp through which you can teach a class. If you sign in as a teahcer you will be able to perform various function like you will be able to play and pause the video any time and write on the text-pad. All the change that you will do will be synced with with all the other viewers in real time. If you pause the video, it will get paused everywhere. If you are student you will be able to see all these changes. If you join later then u will get synced with teacher's interface at a real time.All the user can chat with each other and clarify there doubts. <br/>Enjoy Learning.   </p>
+				
+				<form>
+				 	<p>UserName*: <input type="text" name="text" style="width:300px" id="text"></p>
+				 	<p id="error"></p>
+				 	<input type="button" class="button" onclick="teacher()" value="Sign as Teacher"></input> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" class="button" onclick="student()" value="Sign as Student"></input> 
+					</form>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>
